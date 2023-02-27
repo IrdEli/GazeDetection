@@ -1,3 +1,4 @@
+import time
 import torch
 import torch.nn as nn
 import torch.nn.parallel
@@ -71,7 +72,7 @@ while(True):
     image_normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     model = GazeLSTM()
     model = torch.nn.DataParallel(model)
-    checkpoint = torch.load('ConvNextModel/model_best_Gaze360.pth.tar', map_location=torch.device('cuda'))
+    checkpoint = torch.load('C:/Users/irdal/OneDrive/Desktop/ConvNextGazeSystem/ConvNextModel/model_best_Gaze360.pth.tar', map_location=torch.device('cuda'))
     model.load_state_dict(checkpoint['state_dict'])
     model.eval()
 
@@ -174,7 +175,12 @@ while(True):
                         bbx_all.append([x0,x1,y0,y1])
                         eyeToDraw.append(eye) 
                         if len(v)>6: 
+                            start_time = time.time()
                             detectGaze(v, bbx_all, eyeToDraw[2], noPPF, eyePos7Frames[0],x_rot, y_rot,z_rot)
+                            end_time = time.time()
+                            execution_time = end_time - start_time
+                            print("Execution Time = ", execution_time)
+                            print("FPS: ", 1/execution_time)
                             v.pop(0)
                             eyePos7Frames.pop(0)
                             x_rot.pop(0)
